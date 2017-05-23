@@ -1,0 +1,26 @@
+# -*- coding: utf-8 -*-
+# vim: ft=jinja
+
+{## Start with  defaults from defaults.sls ##}
+{% import_yaml 'nsswitch/defaults.yaml' as default_settings %}
+
+{##
+Setup variable using grains['os_family'] based logic, only add key:values here
+that differ from whats in defaults.yaml
+##}
+{% set flavor_map = salt['grains.filter_by'](
+  {
+  },
+  grain='os_family',
+  merge=salt['pillar.get']('nsswitch:lookup')
+) %}
+
+{## Merge the flavor_map over the default settings ##}
+{% do default_settings.nsswitch.update(flavor_map) %}
+
+{## Merge in changes from the nsswitch:lookup pillar ##}
+{% set nsswitch_settings = salt['pillar.get'](
+  'nsswitch',
+  default=default_settings.nsswitch,
+  merge=True
+) %}
