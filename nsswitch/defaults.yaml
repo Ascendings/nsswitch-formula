@@ -1,4 +1,6 @@
 nsswitch:
+  package_name: False
   config_path: /etc/nsswitch.conf
   config_mode: '0644'
+
 
